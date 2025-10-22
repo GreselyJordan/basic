@@ -2,11 +2,12 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\helpers\Url; // <-- IMPORTAR URL
 
 /** @var yii\web\View $this */
 /** @var app\models\Peliculas $model */
 
-$this->title = $model->id_peliculas;
+$this->title = $model->titulo; // <-- Usar título en lugar de ID
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Peliculas'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -34,9 +35,29 @@ $this->params['breadcrumbs'][] = $this->title;
             'sinipsis:ntext',
             'anio_lanzamiento',
             'duracion_min',
-            'portada',
-            'actores_id_actores',
-            'generos_id_generos',
+            // Mostrar nombre del actor
+            [
+                'attribute' => 'actores_id_actores',
+                'value' => $model->actoresIdActores ? $model->actoresIdActores->nombre : 'N/A',
+            ],
+            // Mostrar nombre del género
+            [
+                'attribute' => 'generos_id_generos',
+                'value' => $model->generosIdGeneros ? $model->generosIdGeneros->nombre : 'N/A',
+            ],
+            // --- MOSTRAR LA IMAGEN DE PORTADA ---
+            [
+                'attribute' => 'portada',
+                'format' => 'html',
+                'value' => function ($model) {
+                    if ($model->portada) {
+                        // Usar Url::to para generar la URL base correcta
+                        return Html::img(Url::to('@web/portadas/' . $model->portada), ['width' => '200px']);
+                    } else {
+                        return 'No hay portada';
+                    }
+                },
+            ],
         ],
     ]) ?>
 

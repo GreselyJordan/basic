@@ -2,10 +2,10 @@
 
 use app\models\Peliculas;
 use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\helpers\Url; // <-- Asegúrate de importar Url
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
+
 /** @var yii\web\View $this */
 /** @var app\models\PeliculasSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -21,7 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app', 'Create Peliculas'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -30,14 +29,30 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id_peliculas',
+            // 'id_peliculas',
             'titulo',
-            'sinipsis:ntext',
+            // 'sinipsis:ntext', // <-- Puedes descomentar esto si quieres ver la sinopsis
             'anio_lanzamiento',
             'duracion_min',
-            //'portada',
-            //'actores_id_actores',
-            //'generos_id_generos',
+            // 'actores_id_actores',
+            // 'generos_id_generos',
+            
+            // --- AQUÍ ESTÁ LA CORRECCIÓN ---
+            [
+                'attribute' => 'portada',
+                'format' => 'html',
+                'label' => 'Portada (Miniatura)', // <-- Opcional: cambiar la etiqueta
+                'value' => function ($model) {
+                    if ($model->portada && file_exists(Yii::getAlias('@webroot/portadas/' . $model->portada))) {
+                        // Esta es la línea corregida:
+                        return Html::img(Url::to('@web/portadas/' . $model->portada), ['width' => '75px']);
+                    } else {
+                        return 'N/A';
+                    }
+                },
+            ],
+            // --- FIN DE LA CORRECCIÓN ---
+
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Peliculas $model, $key, $index, $column) {
@@ -47,6 +62,5 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php Pjax::end(); ?>
 
 </div>
