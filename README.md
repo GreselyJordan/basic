@@ -1,0 +1,2 @@
+# basic
+PrimeVideo
