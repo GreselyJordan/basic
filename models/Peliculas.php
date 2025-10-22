@@ -43,14 +43,21 @@ class Peliculas extends \yii\db\ActiveRecord
     {
         return [
             [['titulo', 'actores_id_actores', 'generos_id_generos'], 'required'],
-            [['sinipsis', 'portada'], 'string'], // <-- 'portada' es un string (el nombre del archivo)
-            [['anio_lanzamiento'], 'safe'],
-            [['duracion_min', 'actores_id_actores', 'generos_id_generos'], 'integer'],
+            [['sinipsis', 'portada'], 'string'],
+
+            // --- VALIDACIÓN DE FECHA ---
+            // Le decimos que esperamos el formato YYYY-MM-DD
+            [['anio_lanzamiento'], 'date', 'format' => 'php:Y-m-d'],
+
+            // --- VALIDACIÓN DE DURACIÓN ---
+            // Aseguramos que sea un número entero y mayor a 0
+            [['duracion_min'], 'integer', 'min' => 1],
+
+            [['actores_id_actores', 'generos_id_generos'], 'integer'],
             [['titulo'], 'string', 'max' => 255],
             [['actores_id_actores'], 'exist', 'skipOnError' => true, 'targetClass' => Actores::class, 'targetAttribute' => ['actores_id_actores' => 'id_actores']],
             [['generos_id_generos'], 'exist', 'skipOnError' => true, 'targetClass' => Generos::class, 'targetAttribute' => ['generos_id_generos' => 'id_generos']],
-            
-            // --- REGLA PARA LA IMAGEN ---
+
             [['imagenFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 2], // 2MB Max
         ];
     }
