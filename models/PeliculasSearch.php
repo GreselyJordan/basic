@@ -18,7 +18,7 @@ class PeliculasSearch extends Peliculas
     {
         return [
             [['id_peliculas', 'duracion_min', 'actores_id_actores', 'generos_id_generos'], 'integer'],
-            [['titulo', 'sinipsis', 'anio_lanzamiento'], 'safe'],
+            [['titulo', 'sinipsis', 'anio_lanzamiento', 'portada'], 'safe'],
         ];
     }
 
@@ -67,7 +67,8 @@ class PeliculasSearch extends Peliculas
         ]);
 
         $query->andFilterWhere(['like', 'titulo', $this->titulo])
-            ->andFilterWhere(['like', 'sinipsis', $this->sinipsis]);
+            ->andFilterWhere(['like', 'sinipsis', $this->sinipsis])
+            ->andFilterWhere(['like', 'portada', $this->portada]);
 
         return $dataProvider;
     }

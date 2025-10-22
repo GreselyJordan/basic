@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'sinipsis:ntext',
             'anio_lanzamiento',
             'duracion_min',
+            'portada',
             'actores_id_actores',
             'generos_id_generos',
         ],

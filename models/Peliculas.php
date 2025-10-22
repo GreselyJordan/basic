@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use yii\web\UploadedFile;
 use Yii;
 
 /**
@@ -13,6 +12,7 @@ use Yii;
  * @property string|null $sinipsis
  * @property string|null $anio_lanzamiento
  * @property int|null $duracion_min
+ * @property string|null $portada
  * @property int $actores_id_actores
  * @property int $generos_id_generos
  *
@@ -24,7 +24,6 @@ use Yii;
 class Peliculas extends \yii\db\ActiveRecord
 {
 
-    public $imagenFile;
 
     /**
      * {@inheritdoc}
@@ -40,15 +39,15 @@ class Peliculas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sinipsis', 'anio_lanzamiento', 'duracion_min'], 'default', 'value' => null],
+            [['sinipsis', 'anio_lanzamiento', 'duracion_min', 'portada'], 'default', 'value' => null],
             [['titulo', 'actores_id_actores', 'generos_id_generos'], 'required'],
             [['sinipsis'], 'string'],
             [['anio_lanzamiento'], 'safe'],
             [['duracion_min', 'actores_id_actores', 'generos_id_generos'], 'integer'],
             [['titulo'], 'string', 'max' => 255],
+            [['portada'], 'string', 'max' => 45],
             [['actores_id_actores'], 'exist', 'skipOnError' => true, 'targetClass' => Actores::class, 'targetAttribute' => ['actores_id_actores' => 'id_actores']],
             [['generos_id_generos'], 'exist', 'skipOnError' => true, 'targetClass' => Generos::class, 'targetAttribute' => ['generos_id_generos' => 'id_generos']],
-            [['imagenFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 
@@ -63,44 +62,12 @@ class Peliculas extends \yii\db\ActiveRecord
             'sinipsis' => Yii::t('app', 'Sinipsis'),
             'anio_lanzamiento' => Yii::t('app', 'Anio Lanzamiento'),
             'duracion_min' => Yii::t('app', 'Duracion Min'),
+            'portada' => Yii::t('app', 'Portada'),
             'actores_id_actores' => Yii::t('app', 'Actores Id Actores'),
             'generos_id_generos' => Yii::t('app', 'Generos Id Generos'),
         ];
     }
 
-
-    public function uptload()
-    {
-        if ($this->validate()) {
-            if ($this->isNewRecord) {
-                if (!$this->save(false)) {
-                    return false;
-                }
-            }
-            if ($this->imagenFile instanceof UploadedFile) {
-                $filename = $this->id_peliculas . '.' . $this->anio_lanzamiento . '_movie' . date('Ymd_His') . '.' . $this->imagenFile->extension;
-                $path = Yii::getAlias('@webroot/portadas/') . $filename;
-
-                if ($this->imagenFile->saveAs($path)) {
-                    if ($this->portada && $this->portada !== $filename) {
-                        $this->deletePortada();
-                    }
-
-                    $this->portada = $filename;
-                }
-            }
-            return $this->save(false);
-        }
-        return false;
-    }
-
-    public function deletePortada()
-    {
-        $path = Yii::getAlias('@webroot/portadas/') . $this->portada;
-        if (file_exists($path)) {
-            @unlink($path);
-        }
-    }
     /**
      * Gets query for [[ActoresIdActores]].
      *

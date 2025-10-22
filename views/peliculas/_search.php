@@ -28,6 +28,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'duracion_min') ?>
 
+    <?php // echo $form->field($model, 'portada') ?>
+
     <?php // echo $form->field($model, 'actores_id_actores') ?>
 
     <?php // echo $form->field($model, 'generos_id_generos') ?>

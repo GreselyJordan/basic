@@ -10,18 +10,17 @@ use yii\widgets\ActiveForm;
 
 <div class="peliculas-form">
 
-    <?php $form = ActiveForm::begin([
-        'options' => ['enctype' => 'multipart/form-data'],
-    ]); ?>
+    <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'titulo')->textInput(['maxlength' => true]) ?>
 
-
-    <?= $form->field($model, 'imagenFile')->fileInput()->label('Seleccionar Portada') ?>
+    <?= $form->field($model, 'sinipsis')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'anio_lanzamiento')->textInput() ?>
 
     <?= $form->field($model, 'duracion_min')->textInput() ?>
+
+    <?= $form->field($model, 'portada')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'actores_id_actores')->textInput() ?>
 

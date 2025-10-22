@@ -2,14 +2,11 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Peliculas;
 use app\models\PeliculasSearch;
-use PhpParser\Node\Stmt\TryCatch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 
 /**
  * PeliculasController implements the CRUD actions for Peliculas model.
@@ -73,27 +70,10 @@ class PeliculasController extends Controller
     public function actionCreate()
     {
         $model = new Peliculas();
-        $message = '';
 
         if ($this->request->isPost) {
-            $transaccion = Yii::$app->db->beginTransaction();
-            try {
-                if ($model->load($this->request->post())) {
-                    $model->imagenFile = UploadedFile::getInstance($model, 'imagenFile');
-                    if ($model->save() && (!$model->imageFile || $model->upload())) {
-                        $transaccion->commit();
-                        return $this->redirect(['view', 'id_peliculas' => $model->id_peliculas]);
-                    } else {
-                        $message = 'No se pudo guardar la pelicula';
-                        $transaccion->rollBack();
-                    }
-                } else {
-                    $message = 'No se pudo cargar la portada';
-                    $transaccion->rollBack();
-                }
-            } catch (\Exception $e) {
-                $transaccion->rollBack();
-                $message = 'Error al guardar la pelicula: ';
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id_peliculas' => $model->id_peliculas, 'actores_id_actores' => $model->actores_id_actores, 'generos_id_generos' => $model->generos_id_generos]);
             }
         } else {
             $model->loadDefaultValues();
@@ -101,7 +81,6 @@ class PeliculasController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'message' => $message,
         ]);
     }
 
@@ -117,16 +96,9 @@ class PeliculasController extends Controller
     public function actionUpdate($id_peliculas, $actores_id_actores, $generos_id_generos)
     {
         $model = $this->findModel($id_peliculas, $actores_id_actores, $generos_id_generos);
-        $message = '';
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            $model->imagenFile = UploadedFile::getInstance($model, 'imagenFile');
-
-            if ($model->save() && (!$model->imageFile || $model->upload())) {
-                return $this->redirect(['view', 'id_peliculas' => $model->id_peliculas]);
-            } else {
-                $message = 'No se pudo actualizar la pelicula';
-            }
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id_peliculas' => $model->id_peliculas, 'actores_id_actores' => $model->actores_id_actores, 'generos_id_generos' => $model->generos_id_generos]);
         }
 
         return $this->render('update', [
