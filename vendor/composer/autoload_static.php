@@ -216,8 +216,8 @@ class ComposerStaticInit81530f0218eaaf54e81b6c5dd4d4589f
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\EventDispatcher\\' => 
         array (
@@ -261,9 +261,9 @@ class ComposerStaticInit81530f0218eaaf54e81b6c5dd4d4589f
         ),
         'Codeception\\' => 
         array (
-            0 => __DIR__ . '/..' . '/codeception/verify/src/Codeception',
-            1 => __DIR__ . '/..' . '/codeception/codeception/src/Codeception',
-            2 => __DIR__ . '/..' . '/codeception/stub/src',
+            0 => __DIR__ . '/..' . '/codeception/codeception/src/Codeception',
+            1 => __DIR__ . '/..' . '/codeception/stub/src',
+            2 => __DIR__ . '/..' . '/codeception/verify/src/Codeception',
         ),
         'Behat\\Gherkin\\' => 
         array (
