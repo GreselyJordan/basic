@@ -7,6 +7,7 @@ use app\models\GenerosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * GenerosController implements the CRUD actions for Generos model.
@@ -21,6 +22,21 @@ class GenerosController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => ['@'], // must be authenticated
+                            'matchCallback' => function ($rule, $action) {
+                                // Solo administradores pueden acceder a la gestión de generos
+                                return !\Yii::$app->user->isGuest && \Yii::$app->user->identity->role === 'admin';
+                            }
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

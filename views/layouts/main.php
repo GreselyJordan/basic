@@ -42,26 +42,20 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             'options' => ['class' => 'navbar-nav'],
             'items' => [
                 ['label' => 'Inicio', 'url' => ['/site/index']],
-                // ['label' => 'Sobre nosotros', 'url' => ['/site/about']],
-                // ['label' => 'Contacto', 'url' => ['/site/contact']],
-                // ['label' => 'Actores', 'url' => ['/actores/index']],
-                [
+                // Solo admin ve el menú de gestión
+                (!Yii::$app->user->isGuest && Yii::$app->user->identity->role === 'admin') ? [
                     'label' => 'Gestionar Peliculas',
                     'items' => [
                         ['label' => 'Actores', 'url' => ['/actores/index']],
                         ['label' => 'Peliculas', 'url' => ['/peliculas/index']],
                         ['label' => 'Generos', 'url' => ['/generos/index']],
                         ['label' => 'Directores', 'url' => ['/directores/index']],
-                        // CÓDIGO CORREGIDO PARA LA LÍNEA 55
-                        Yii::$app->user->isGuest
-                        ? ''
-                        : (Yii::$app->user->identity->role != 'admin'
-                            ? ''
-                            : ['label' => 'User', 'url' => ['/user/index']]
-                        )
+                        ['label' => 'Usuarios', 'url' => ['/user/index']],
                     ],
-                ],
-                Yii::$app->user->isGuest ? '' : ['label' => 'Cambiar password', 'url' => ['/user/change-password']],
+                ] : '',
+                // Usuario normal solo ve cambiar password
+                (!Yii::$app->user->isGuest && Yii::$app->user->identity->role !== 'admin') ? ['label' => 'Cambiar password', 'url' => ['/user/change-password']] : '',
+                // Invitado ve solo login
                 Yii::$app->user->isGuest
                 ? ['label' => 'Iniciar sesion', 'url' => ['/site/login']]
                 : '<li class="nav-item">'
@@ -88,14 +82,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         </div>
     </main>
 
-    <footer id="footer" class="mt-auto py-3 bg-light">
-        <div class="container">
-            <div class="row text-muted">
-                <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
-                <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
-            </div>
-        </div>
-    </footer>
+
 
     <?php $this->endBody() ?>
 </body>

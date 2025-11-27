@@ -7,12 +7,9 @@ use app\models\PeliculasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile; // <-- IMPORTAR CLASE
-use Yii; // <-- IMPORTAR YII
-
-/**
- * PeliculasController implements the CRUD actions for Peliculas model.
- */
+use yii\filters\AccessControl;
+use yii\web\UploadedFile;
+use Yii;
 class PeliculasController extends Controller
 {
     /**
@@ -23,6 +20,21 @@ class PeliculasController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => ['@'], // must be authenticated
+                            'matchCallback' => function ($rule, $action) {
+                                // Solo administradores pueden acceder a la gestión de peliculas
+                                return !\Yii::$app->user->isGuest && \Yii::$app->user->identity->role === 'admin';
+                            }
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

@@ -15,39 +15,39 @@ class UserController extends Controller
 
     public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'view', 'create', 'update', 'delete', 'reset-password', 'change-password'],
-                'rules' => [ // <-- ¡Este es el array principal que contendrá TODAS las reglas!
-
-                    // REGLA 1 (Para 'change-password')
-                    [
-                        'allow' => true,
-                        'actions' => ['change-password'], // Usar 'actions' en plural
-                        'roles' => ['@'] // Permitir a cualquier usuario autenticado
+            return [
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete', 'reset-password', 'change-password'],
+                    'rules' => [
+                        // Solo el admin puede gestionar usuarios
+                        [
+                            'allow' => true,
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'reset-password'],
+                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                return !Yii::$app->user->isGuest && Yii::$app->user->identity->role === 'admin';
+                            }
+                        ],
+                        // Solo el usuario autenticado puede cambiar su propia contraseña
+                        [
+                            'allow' => true,
+                            'actions' => ['change-password'],
+                            'roles' => ['@'],
+                            'matchCallback' => function ($rule, $action) {
+                                // Solo puede cambiar su propia contraseña
+                                return !Yii::$app->user->isGuest;
+                            }
+                        ],
                     ],
-
-                    // REGLA 2 (Para Administradores)
-                    [
-                        'allow' => true,
-                        // Dejar 'actions' vacío o no incluirlo significa que aplica a TODAS las acciones en 'only'
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'reset-password'], // Lista de acciones que el admin puede hacer
-                        'roles' => ['@'], // Debe estar autenticado
-                        'matchCallback' => function ($rule, $action) {
-                            // ¡IMPORTANTE! También debes añadir la verificación isGuest aquí para evitar un error de 'null' si no lo hiciste en el layout.
-                            return !Yii::$app->user->isGuest && Yii::$app->user->identity->role == 'admin';
-                        }
+                ],
+                'verbs' => [
+                    'class' => \yii\filters\VerbFilter::class,
+                    'actions' => [
+                        'delete' => ['POST'],
                     ]
-                ], // <-- ¡FIN DEL ARRAY PRINCIPAL DE REGLAS!
-            ],
-            'verbs' => [
-                'class' => \yii\filters\VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
                 ]
-            ]
-        ];
+            ];
     }
     public function actionIndex()
     {

@@ -7,6 +7,7 @@ use app\models\ActoresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * ActoresController implements the CRUD actions for Actores model.
@@ -21,6 +22,21 @@ class ActoresController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => ['@'], // must be authenticated
+                            'matchCallback' => function ($rule, $action) {
+                                // Solo administradores pueden acceder a la gestión de actores
+                                return !\Yii::$app->user->isGuest && \Yii::$app->user->identity->role === 'admin';
+                            }
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

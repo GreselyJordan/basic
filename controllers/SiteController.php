@@ -9,6 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Peliculas;
 
 class SiteController extends Controller
 {
@@ -61,7 +62,15 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        // Películas destacadas para el slider (últimas con portada)
+        $featured = Peliculas::find()->where(['not', ['portada' => null]])->orderBy(['id_peliculas' => SORT_DESC])->limit(5)->all();
+        // Todas las películas para el listado
+        $peliculas = Peliculas::find()->orderBy(['titulo' => SORT_ASC])->all();
+
+        return $this->render('index', [
+            'featured' => $featured,
+            'peliculas' => $peliculas,
+        ]);
     }
 
     /**

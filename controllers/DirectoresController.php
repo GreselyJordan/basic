@@ -7,6 +7,7 @@ use app\models\DirectoresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * DirectoresController implements the CRUD actions for Directores model.
@@ -21,6 +22,21 @@ class DirectoresController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => \yii\filters\AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => ['@'], // must be authenticated
+                            'matchCallback' => function ($rule, $action) {
+                                // Solo administradores pueden acceder a la gestión de directores
+                                return !\Yii::$app->user->isGuest && \Yii::$app->user->identity->role === 'admin';
+                            }
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

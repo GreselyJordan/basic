@@ -2,54 +2,78 @@
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
-
 /** @var app\models\LoginForm $model */
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Iniciar Sesión';
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
-
-    <div class="row">
-        <div class="col-lg-5">
+<div class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo/Brand -->
+            <div class="login-header">
+                <h1 class="login-brand">GreselyApp</h1>
+                <p class="login-subtitle">Bienvenido de vuelta</p>
+            </div>
 
             <?php $form = ActiveForm::begin([
                 'id' => 'login-form',
+                'options' => ['class' => 'login-form'],
                 'fieldConfig' => [
                     'template' => "{label}\n{input}\n{error}",
-                    'labelOptions' => ['class' => 'col-lg-1 col-form-label mr-lg-3'],
-                    'inputOptions' => ['class' => 'col-lg-3 form-control'],
-                    'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+                    'labelOptions' => ['class' => 'login-label'],
+                    'inputOptions' => ['class' => 'login-input'],
+                    'errorOptions' => ['class' => 'login-error'],
                 ],
             ]); ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+            <div class="form-group-custom">
+                <?= $form->field($model, 'username')->textInput([
+                    'autofocus' => true,
+                    'placeholder' => 'Ingresa tu usuario',
+                    'class' => 'login-input'
+                ])->label('Usuario') ?>
+            </div>
 
-            <?= $form->field($model, 'password')->passwordInput() ?>
+            <div class="form-group-custom">
+                <?= $form->field($model, 'password')->passwordInput([
+                    'placeholder' => 'Ingresa tu contraseña',
+                    'class' => 'login-input'
+                ])->label('Contraseña') ?>
+            </div>
 
-            <?= $form->field($model, 'rememberMe')->checkbox([
-                'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            ]) ?>
+            <div class="form-group-custom">
+                <?= $form->field($model, 'rememberMe')->checkbox([
+                    'template' => "<div class='login-checkbox'>{input} {label}</div>\n{error}",
+                    'labelOptions' => ['class' => 'login-checkbox-label'],
+                ])->label('Recordarme') ?>
+            </div>
 
-            <div class="form-group">
-                <div>
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
+            <div class="form-group-custom">
+                <?= Html::submitButton('Iniciar Sesión', [
+                    'class' => 'login-button',
+                    'name' => 'login-button'
+                ]) ?>
             </div>
 
             <?php ActiveForm::end(); ?>
 
-            <div style="color:#999;">
-                You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>
-                To modify the username/password, please check out the code <code>app\models\User::$users</code>.
+            <!-- Login Help Text -->
+            <div class="login-help">
+                <p class="login-help-text">
+                    Puedes iniciar sesión con <strong>admin/admin</strong> o <strong>demo/demo</strong>
+                </p>
             </div>
+        </div>
 
+        <!-- Background Decoration -->
+        <div class="login-decoration">
+            <div class="decoration-circle decoration-circle-1"></div>
+            <div class="decoration-circle decoration-circle-2"></div>
+            <div class="decoration-circle decoration-circle-3"></div>
         </div>
     </div>
 </div>
